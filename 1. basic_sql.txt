@@ -1,0 +1,187 @@
+#### BASIC FUNCTIONS AND OPERATORS ####
+
+# BASIC SYNTAX
+## SELECT
+--Please show 100 record of users data with the details: id, display_ame, creation_date, location
+-- SELECT id, display_name, creation_date, location
+-- FROM `bigquery-public-data.stackoverflow.users`
+-- LIMIT 100
+
+-- Plese show 100 records of users data with all attrubutes / columns
+-- SELECT *
+-- FROM `bigquery-public-data.stackoverflow.users`
+-- LIMIT 100
+
+-- Please show 100 records of users data with the details : id, display_name, creation_date, location, reputation, website_url
+-- SELECT id, display_name, creation_date, location, reputation, website_url
+-- FROM `bigquery-public-data.stackoverflow.users`
+-- LIMIT 100
+
+## LIMIT
+-- Please show 1000 records of users data (all attributes)
+-- SELECT*
+-- FROM `bigquery-public-data.stackoverflow.users`
+-- LIMIT 1000
+
+-- Please show 100 records of users name and users id
+-- SELECT id, display_name
+-- FROM `bigquery-public-data.stackoverflow.users`
+-- LIMIT 100
+
+## WHERE
+-- Please show 100 records of users name and register date who are located in canada
+-- SELECT display_name, creation_date
+-- FROM `bigquery-public-data.stackoverflow.users`
+-- WHERE location = 'Canada'
+-- LIMIT 100
+
+-- Please show 500 records of users name and their register date, from users who are located in United States
+-- SELECT display_name, creation_date
+-- FROM `bigquery-public-data.stackoverflow.users`
+-- WHERE location = 'United States'
+-- LIMIT 500
+
+# FUNCTION & OPERATORS
+## TEXT
+-- Please show 100 records of users name and register date who are located in Japan
+-- SELECT display_name AS user_name, creation_date AS register_date
+-- FROM `bigquery-public-data.stackoverflow.users`
+-- WHERE location = 'Japan'
+-- LIMIT 100
+
+## NUMERIC
+-- Please show 100 records of users name and register date who have reputation more than 10000
+-- SELECT display_name AS user_name, creation_date AS register_date
+-- FROM `bigquery-public-data.stackoverflow.users`
+-- WHERE reputation > 10000
+-- LIMIT 100
+
+## COMPARISON OPERATOR
+-- Please show 100 record of users data who register > Jan 1, 2021
+-- SELECT*
+-- FROM `bigquery-public-data.stackoverflow.users`
+-- WHERE creation_date > '2021-01-01'
+-- LIMIT 100
+
+## LOGICAL OPERATOR
+### AND
+-- Show 1000 records of users data who register after jan 21, 2021 and located in United States
+-- SELECT*
+-- FROM `bigquery-public-data.stackoverflow.users`
+-- WHERE creation_date > '2021-01-21' and location = 'United Status'
+-- LIMIT 1000
+
+### OR
+-- Show 500 records of users data who acces stackopverflow at the latest after sept 1, 2021 or gave reputation more than 500
+-- SELECT*
+-- FROM `bigquery-public-data.stackoverflow.users`
+-- WHERE last_access_date > '2021-09-01' and reputation > 500
+-- LIMIT 500
+
+### NOT
+-- Show 20 records of users data who are not from Canada (and also not contains the wording) and their reputation less than 50
+-- SELECT*
+-- FROM `bigquery-public-data.stackoverflow.users`
+-- WHERE not location like '%Canada%' and reputation < 50
+-- LIMIT 20
+
+## BETWEEN
+-- Show 100 records of users data who register between Jan 1, 2021 and Jan 31, 2021
+-- SELECT*
+-- FROM `bigquery-public-data.stackoverflow.users`
+-- WHERE creation_date BETWEEN '2021-02-01' and '2021-01-31'
+-- LIMIT 100
+
+## LIKE
+-- Show 10 records of comments data which contains 'SQL'
+-- SELECT*
+-- FROM `bigquery-public-data.stackoverflow.comments`
+-- WHERE text like '%SQL%'
+-- LIMIT 10
+
+## IN
+-- Show 100 records of users data who are locate in Canada, United States and Spain
+-- SELECT*
+-- FROM `bigquery-public-data.stackoverflow.users`
+-- WHERE location in ('Canada', 'United States', 'Spain')
+-- LIMIT 100
+
+## IS NOT NULL
+-- Show 50 records of users data with non-empy 'about_me'
+-- SELECT*
+-- FROM `bigquery-public-data.stackoverflow.users`
+-- WHERE about_me IS NOT NULL
+-- LIMIT 50
+
+-- Show 10 records of comments data with empty 'user_display_name'
+-- SELECT*
+-- FROM `bigquery-public-data.stackoverflow.comments`
+-- WHERE user_display_name IS NOT NULL
+-- LIMIT 10
+
+# ORDERING AND ALIAS
+## ORDER BY
+-- Show the first 10 user (based on register date) who have reputation more than 500
+-- SELECT*
+-- FROM `bigquery-public-data.stackoverflow.users`
+-- WHERE reputation > 500
+-- ORDER BY creation_date
+-- LIMIT 10
+
+-- Show 100 records of the latest users whot didn't input the information about themselves
+-- SELECT*
+-- FROM `bigquery-public-data.stackoverflow.users`
+-- WHERE about_me IS NULL
+-- ORDER BY creation_date DESC
+-- LIMIT 100
+
+## ALIAS
+-- Show the firt 20 user (based on register date) who have reputation more than 500, with detail: id, user_name, register_date, location
+-- SELECT id AS user_id, display_name AS user_name, creation_date AS register_date, location
+-- FROM `bigquery-public-data.stackoverflow.users`
+-- WHERE reputation > 500
+-- ORDER BY register_date ASC
+-- LIMIT 20
+
+#### DATA DEFINITION LANGUAGE (DDL) ####
+# CREATE
+-- CREATE OR REPLACE table `ridwanpuadi.demo_revo_u`
+-- (StudentId STRING, StudentName STRING, DepartmentId INT64, DateBirth TIMESTAMP)
+
+# ALTER
+-- We want to change the table name into student_2023
+-- ALTER TABLE `ridwanpuadi:demo_revo_u.student`
+-- RENAME TO student_2023
+
+--We want to add column gender to table students_2023
+-- ALTER TABLE `ridwanpuadi.demo_revo_u.student_2023`
+-- ADD COLUMN gender string
+
+-- We want to drop column StudentName from table student_2023
+-- ALTER TABLE `ridwanpuadi.demo_revo_u.student_2023`
+-- DROP COLUMN StudentName
+
+# DROP
+-- We want to drop the table name student_2023
+-- DROP TABLE `ridwanpuadi.demo_revo_u.student_2023`
+
+#### DATA MANIPULATION LANGUAGE (DML) ####
+# INSERT
+-- INSERT INTO `ridwanpuadi.demo_revo_u.student`
+-- (id, user_name, register_date, location)
+-- VALUES (800, 'RidwanPuadi', '1997-01-01', 'Indonesia')
+
+# UPDATE
+-- UPDATE `ridwanpuadi.demo_revo_u.student`
+-- SET register_date = '2023-09-10', location = 'Bogor', Indonesia'
+-- WHERE id = 800;
+
+# DELETE
+-- DELETE FROM `ridwanpuadi.demo_revo_u.student`
+-- WHERE ID = 800;
+
+
+
+
+
+

@@ -1,0 +1,392 @@
+#SQL AGGREGATE FUNCTION
+## AVG (calculate the average of a set of value)
+--Plis find average of the reputation from  users who are located in Indonesia and have registered after Jan 1, 2021
+--SELECT AVG (reputation) avg_reputation
+--FROM `bigquery-public-data.stackoverflow.users`
+--WHERE location = 'indonesia' and creation_date > '2021-01-01'
+
+## COUNT(counts rows in a specified table or view)
+-- Please find the totak questions created between Jan 1, 2020 and Apr 30, 2020 and it;s been viewed more than 10000 times
+--SELECT COUNT (id) as total_question 
+--FROM `bigquery-public-data.stackoverflow.posts_questions`
+--WHERE date (creation_date) between '2020-01-01' and '2020-04-03' and view_count > 10000
+
+## COUNT(DISTINCT)(count unique rows in a specified table or view)
+-- Please find the total of users who posted questions between Jan 1, 2020 and Apr 30, 2020 and the questions been viewed more than 10000 times
+-- SELECT COUNT (DISTINCT owner_user_id) as total_users 
+-- FROM `bigquery-public-data.stackoverflow.posts_questions`
+-- WHERE date (creation_date) between '2020-01-01' and '2020-04-03' and view_count > 10000
+
+## MIN(get the minimum value in a set of values)
+-- Please find the minimun of reputation from users whose names containing 'John' and have registered after 2020
+--SELECT MIN (reputation)
+--FROM `bigquery-public-data.stackoverflow.users`
+--WHERE display_name like'%John%' and date (creation_date) >= '2020-01-01'
+
+## MAX(find the maximum value of a set of values)
+-- Please find the maximum of reputation from users whose name containing 'John' and have registered after 2020
+--SELECT MAX (reputation)
+--FROM `bigquery-public-data.stackoverflow.users`
+--WHERE display_name like'%John%' and date (creation_date) >= '2020-01-01'
+
+## SUM(calculate the sum values)
+-- Please find the total score of comments created after Sept 10, 2021 and contains the wording 'BigQuery'
+--SELECT SUM (score) total_core
+--FROM `bigquery-public-data.stackoverflow.comments`
+--WHERE date (creation_date) > '2021-09-10' and text like '%BigQuery'
+
+## GROUP BY (allows you to combine rows and aggregate data based on certain columns/groups)
+-- Please find the average of reputation by location from users who register in 2020 from United States,Canada, Spain, Japan, and France
+--SELECT location, AVG (reputation) as avg_reputation
+--FROM `bigquery-public-data.stackoverflow.users`
+--WHERE date (creation_date) between '2020-01-01' and '2020-12-31' 
+--and location in ('United States', 'Canada', 'Spain', 'Japan', 'France')
+--Group by location
+
+-- Please find the MIN and MAX of reputation by location from users who register in 2020 from United States,Canada, Spain, Japan, and France
+--SELECT MIN (reputation) min_reputation, MAX (reputation) max_reputation
+--FROM `bigquery-public-data.stackoverflow.users` 
+--WHERE date (creation_date) between '2020-01-01' and '2020-12-31' 
+--and location in ('United States', 'Canada', 'Spain', 'Japan', 'France')
+
+# SQL CHARACTER FUNCTION
+## LOWER(function converts a string to lower-case)
+-- Please find the total of reputation from users whose names containing 'John' or 'john and have registered after 2021'
+--SELECT SUM (reputation)
+--FROM `bigquery-public-data.stackoverflow.users` 
+--WHERE LOWER (display_name) like '%john%' and date (creation_date)>='2021-01-01'
+
+-- Please show 10 records of LOWERCASE users name containing 'John'
+--SELECT LOWER (display_name)
+--FROM `bigquery-public-data.stackoverflow.users` 
+--WHERE LOWER (display_name) like '%john%'
+--LIMIT 10
+
+## UPPER(function converts a string to upper-case)
+-- Please find the total of reputation from users whose names containing 'John' or 'john' and have registered after 2021
+--SELECT SUM (reputation)
+--FROM `bigquery-public-data.stackoverflow.users` 
+--WHERE UPPER (display_name) like '%john%' and date (creation_date)>= '2021-01-01'
+
+## CONCAT(function adds two or more strings together)
+-- Please show 20 records of users name and location in one string separated by '-'
+--SELECT CONCAT (display_name, ' ', location)
+--FROM `bigquery-public-data.stackoverflow.users` 
+--LIMIT 20
+
+## LENGTH(function returns the number of bytes used to represant an expression)
+-- Please find the users whose names have more than 20 characters from United States
+--SELECT id, display_name user_name, date(creation_date) register_date
+--FROM `bigquery-public-data.stackoverflow.users` 
+--WHERE LENGTH (display_name)>20 and location = 'United States'
+
+## SUBSTR(function extracts some characters from a string)
+--SELECT SUBSTR ('Ridwan Puadi', 4,6) ExtracString
+
+--Please extract the first 50 letters from comments text which created after 2020
+-- SELECT SUBSTR(text, 0, 50)
+-- FROM `bigquery-public-data.stackoverflow.comments`
+-- WHERE date(creation_date)>= '2020-01-01'
+-- LIMIT 10
+
+## REPLACES(function replaces all occurrences of a substring within a string, with a new substring)
+-- Please show the first 50 comments and replace all occurence of 'test' with empy string
+--SELECT replace (lower(text), 'test', '')
+--FROM `bigquery-public-data.stackoverflow.comments`
+--WHERE date (creation_date)>= '2020-01-01'
+--LIMIT 50
+
+# SQL String Function
+## LEFT(return certain number of the characters from the left side)
+--SELECT id, display_name user_name, LEFT (display_name, 5) tenleft_user_name
+--FROM `bigquery-public-data.stackoverflow.users` 
+--LIMIT 100
+
+## RIGHT(return certain number of the characters from the left side)
+--SELECT id, display_name user_name, RIGHT (display_name, 3) tenright_user_name
+--FROM `bigquery-public-data.stackoverflow.users` 
+--LIMIT 100
+
+## REGEXP_EXTRACT(return the substring in value that matches the regular expression)
+--SELECT id, display_name user_name, REGEXP_EXTRACT(display_name, '[0-9]+') 
+--FROM `bigquery-public-data.stackoverflow.users` 
+--WHERE REGEXP_CONTAINS(display_name,'[0-9]+') = TRUE
+--LIMIT 100
+
+## REGEXP_REPLACE(replace the value that matches the regular expression)
+--SELECT id, display_name user_name, REGEXP_REPLACE(display_name, '[0-9]+',' ') 
+--FROM `bigquery-public-data.stackoverflow.users` 
+--WHERE REGEXP_CONTAINS(display_name,'[0-9]+') = TRUE
+--LIMIT 100
+
+#DATE MANIPULATION
+## DATE
+--SELECT DATE ('2023-05-23')
+
+## EXTRACT (return the value of the date part)
+--SELECT EXTRACT (YEAR FROM DATE '2020-12-10')
+--SELECT EXTRACT (YEAR FROM DATE (2020,12,10))
+--SELECT EXTRACT (DAY FROM DATE ('2020-05-23')) extract_date
+--SELECT EXTRACT (WEEK FROM DATE ('2023-05-23')) extract_week
+--SELECT EXTRACT (MONTH FROM DATE ('2023-12-23')) extract_month
+--SELECT EXTRACT (YEAR FROM DATE ('2023-12-23')) extract_year
+
+-- Please show 100 records of users data who registered in 2021 with the details: id, display_name, date(creation_date), location
+--SELECT id, display_name, date(creation_date) user_date, location
+--FROM `bigquery-public-data.stackoverflow.users` 
+--WHERE EXTRACT (YEAR from date (date(creation_date))) = 2021
+--LIMIT 100
+
+## DATE_ADD (return the value of the date + specified time interval)
+--SELECT DATE_ADD (DATE('2023-05-23'), INTERVAL 5 DAY) result
+--SELECT DATE_ADD (DATE('2023-05-23'), INTERVAL 5 WEEK) result
+--SELECT DATE_ADD (DATE('2023-05-23'), INTERVAL 7 MONTH) result
+--SELECT DATE_ADD (DATE('2023-05-23'), INTERVAL 2 YEAR) result
+
+--Please show 50 records of users data who registered 3 months after jan 2020 with the details: id,display_name, date(creation_date) user_date, location
+--SELECT id, display_name, date(creation_date) user_date, location
+--FROM `bigquery-public-data.stackoverflow.users` 
+--WHERE DATE (date(creation_date)) => DATE_ADD (DATE ('2020-01-01'), INTERVAL 3 MONTH)
+--LIMIT 50
+
+## DATE_SUB (return the value of the date - specified time interval)
+--SELECT DATE_SUB (DATE('2023-05-23'), INTERVAL 5 DAY) result
+--SELECT DATE_SUB (DATE('2023-05-23'), INTERVAL 5 WEEK) result
+--SELECT DATE_SUB (DATE('2023-05-23'), INTERVAL 7 MONTH) result
+--SELECT DATE_SUB (DATE('2023-05-23'), INTERVAL 2 YEAR) result
+
+--Please show 25 records of users data who registered 28 days before 25 feb 2020 with the details: id, display_name, date(creation_date) user_date, location
+--SELECT id, display_name, date(creation_date) user_date, location
+--FROM `bigquery-public-data.stackoverflow.users` 
+--WHERE DATE (DATE(creation_date)) >= DATE_SUB (DATE '2020-02-22', INTERVAL 28 DAY)
+--LIMIT 25
+
+## DATE_DIFF(return the value of difference between two specified date)
+--SELECT DATE_DIFF (DATE('2023-05-29'), DATE ('2023-05-23'), DAY) result
+
+-- Please show 55 records of comments data with the details: comment_id, comment_text, comment_date, user_register_date, diff_comment_register_day
+-- SELECT c.id comment_id, c.text comment_text, c.creation_date comment_date, u.creation_date user_register_date,
+-- DATE_DIFF(date(u.creation_date), date(c.creation_date), DAY) as diff_comment_register_day
+-- FROM `bigquery-public-data.stackoverflow.comments` c
+-- LEFT JOIN `bigquery-public-data.stackoverflow.users` u
+-- ON c.user_id=u.id
+-- LIMIT 55
+
+## DATE_TRUNCH(convert the value of the data to specific granularity)
+--SELECT DATE_TRUNC (DATE('2023-05-12'),WEEK) result
+--SELECT DATE_TRUNC (DATE('2023-10-25'),MONTH) result
+--SELECT DATE_TRUNC (DATE('2023-05-29'),YEAR) result
+
+--Please show monthly total registered user in 2020 and 2021
+--SELECT DATE_TRUNC(DATE(DATE(creation_date)), MONTH) month
+--FROM `bigquery-public-data.stackoverflow.users` 
+--WHERE EXTRACT (YEAR FROM DATE(creation_date)) in (2020,2021)
+--GROUP BY 1
+--ORDER BY 1
+
+## Alternative Date Functions
+#EXTRACT (return the value of the datetime part)
+--SELECT EXTRACT (YEAR FROM datetime '2020-12-10 23:59:59')
+--SELECT EXTRACT (YEAR FROM datetime (2020,12,10,23,59,59))
+
+--Please show 500 records of users data who registered in 2021 with the details: id, display_name, date(creation_date), location
+--SELECT id, display_name, date(creation_date) user_date, location
+--FROM `bigquery-public-data.stackoverflow.users` 
+--WHERE extract (YEAR FROM datetime(Date(creation_date))) = 2021
+--LIMIT 500
+
+#DATETIME_ADD (return the value of the datetime + specified time interval)
+--SELECT DATETIME_ADD (datetime ('2020-12-10 23:59:59'), INTERVAL 50 SECOND)
+--SELECT DATETIME_ADD (datetime ('2020-12-10 23:59:59'), INTERVAL 20 MINUTE)
+
+--Please show 50 records of users data who registered 3 months after Jan 2020 with the details: id, display_name, date(creation_date) user_date, location
+--SELECT id, display_name, date(creation_date) user_date, location
+--FROM `bigquery-public-data.stackoverflow.users` 
+--WHERE datetime(Date(creation_date)) >= DATETIME_aDD(datetime '2020-01-01', --INTERVAL 3 MONTH)
+--LIMIT 50
+
+# DATETIME_SUB (return the value of the datetime - specified time interval)
+--SELECT DATETIME_SUB (datetime '2021-05-10 23:00:00'), INTERVAL 5 MINUTE)
+--SELECT DATETIME_SUB (date(2020, 12, 25, 10, 30, 00), Interval 1500 SECOND)
+
+##DATA CLEANING
+# HAVING CLAUSE (allows you to filter the data aggregated by the GROUP BY clause so that the user gets a limited set of records to view)
+
+--Please find the average of reputation by location from users who register in 2020 and the average must grater than 1000
+--SELECT location, AVG (reputation) avg_reputation
+--FROM `bigquery-public-data.stackoverflow.users` 
+--WHERE creation_date between '2020-01-01' and '2020-12-31'
+--GROUP BY 1
+--HAVING AVG (reputation) > 1000
+
+# DISTINC (used to return only disticnt (different) values)
+--Please show the unique of post types
+--SELECT DISTINCT post_type_id
+--FROM bigquery-public-data.stackoverflow.stackoverflow_posts
+
+# CAST (function converts a value (of any type) into a specified datatype)
+--SELECT id, display_name user_name, CAST (creation_date as date) register_date
+--FROM `bigquery-public-data.stackoverflow.users` 
+--WHERE creation_date between '2020-01-01' and '2020-12-31'
+--ORDER BY creation_date DESC
+--LIMIT 100
+
+# SAFE CAST (if you want to protect your queries from these types of errors, you can use SAFE_CAST. SAFE_CAST is identical to CAST, except it return NULL instead of raising an error)
+--SELECT id, display_name user_name, CAST (creation_date as date) register_date, SAFE_CAST (reputation as string) reputation
+--FROM `bigquery-public-data.stackoverflow.users` 
+--WHERE creation_date between '2020-01-01' and '2020-12-31'
+--ORDER BY creation_date DESC
+--LIMIT 100
+
+# COALESCE (function returns the first non-null value in a list)
+--SELECT id, display_name, COALESCE (about_me, ' '), creation_date
+--FROM `bigquery-public-data.stackoverflow.users` 
+--WHERE creation_date between '2020-01-01' and '2020-12-31'
+
+--SELECT UPPER (location), AVG(reputation), COUNT (DISTINCT id) unique_user
+--FROM `bigquery-public-data.stackoverflow.users` 
+--WHERE location LIKE '%United States%' OR location LIKE '%Canada%' OR location LIKE '%China%' OR location LIKE '%Japan%' and DATE(Creation_date) >= '2021-01-01'
+--GROUP BY 1
+--HAVING AVG (reputation) > 2000;
+
+#SQL Joins
+# INNER JOIN (selects records that have matching values in two tables)
+--Please show 10 users who have posted question in stackoverflow and the users location in United States or Canada, with details: user id, user_name, register_date, location
+--SELECT u.id user_id, u.display_name user_name, u.creation_date register_date, u.location user_loaction
+--FROM `bigquery-public-data.stackoverflow.users` u INNER JOIN `bigquery-public-data.stackoverflow.posts_questions` p on u.id = p.owner_user_id
+--WHERE location in ('United States', 'Canada')
+--LIMIT 10
+
+# LEFT JOIN (when you need all records fro the "left" table, no matter if they have pair in the "right" table or not)
+--Please show 100 comments which created after 2020 and the users have registered in Dec 2019, with details: users_name, register_date, text_comment, comment_creation_date
+--SELECT u.display_name user_name, u.creation_date register_date, c.text text_comment, c.creation_date comment_creation_date
+--FROM `bigquery-public-data.stackoverflow.comments` c LEFT JOIN `bigquery-public-data.stackoverflow.users` u ON c.user_id = u.id
+--WHERE c.creation_date >= '2020-01-01' and u.creation_date between '2019-12-01' and '2019-12-31'
+--LIMIT 100
+
+# RIGHT JOIN (when you need all records from the "right" table, no matter if they have pair in the "left" table or not)
+--Please show 50 questions which created after 2020 and have the answers with more than 50 comments, with details: question_id, question_title, question_creation_date, answer_comment_count
+--SELECT pa.id question_id, pa.title question_title, pa.creation_date question_creation_date, pa.comment_count answer_comment_count
+--FROM `bigquery-public-data.stackoverflow.posts_answers` pa RIGHT JOIN `bigquery-public-data.stackoverflow.comments` c ON pa.id = c.post_id
+--WHERE pa.creation_date >= '2020-01-01' and pa.comment_count>50
+--LIMIT 50
+
+# OUTER JOIN (return matched and unmatched rows from both tables)
+
+## JOIN COMPARISON OPERATORS
+# CROSS JOIN (used to generate all combinations of records in two tables)
+--Please find 20 unique users who have posted the answers at the minimum 1 day after they registered, with details: user_id, user_name, user_registered_date
+--SELECT DISTINCT u.id user_id, u.display_name user_name, u.creation_date register_date
+--FROM `bigquery-public-data.stackoverflow.users` u JOIN `bigquery-public-data.stackoverflow.posts_answers` pa ON pa.owner_user_id = u.id and date(pa.creation_date) > date(u.creation_date)
+--LIMIT 20
+
+# JOINS MULTIPLE KEYS (in some cases, you might find the table with multiple foreighn keys, that is why we need to join on multuple keys on increase the accuracy)
+--Please find 50 unique users who have posted the answer with details: user_id, user_name, user_registered_date, owner_display_name
+--SELECT DISTINCT u.id user_id, u.display_name user_name, u.creation_date register_date, pa.owner_display_name owner_display_name 
+--FROM `bigquery-public-data.stackoverflow.users` u JOIN `bigquery-public-data.stackoverflow.posts_answers` pa ON pa.owner_user_id = u.id AND pa.owner_display_name = u.display_name
+--LIMIT 50
+
+# SELF JOIN (in some cases, you might have to join a table toitself, for example when you need to find the following value in the same group)
+--Please find 15 users who posted a questions with more views than the previous question with details: user_id, user_name
+--SELECT DISTINCT q1.owner_user_id user_id, q1.owner_display_name user_name
+--FROM `bigquery-public-data.stackoverflow.posts_answers` q1 INNER JOIN `bigquery-public-data.stackoverflow.posts_answers` q2 ON q1.owner_user_id = q2.owner_user_id and q1.view_count > q2.view_count and q1.id > q2.id
+--LIMIT 15
+
+--SELECT u.id user_id, u.display_name user_name, u.creation_date register_date, u.location location
+--FROM `bigquery-public-data.stackoverflow.posts_answers` pa INNER JOIN `bigquery-public-data.stackoverflow.users` u ON pa.owner_user_id = u.id
+--WHERE u.location IN ('Spain','Japan')
+--LIMIT 5
+
+--SELECT u.location location, count (q.id) question_count, SUM (q.answer_count) answer_count, SUM (q.comment_count) comment_count
+--FROM `bigquery-public-data.stackoverflow.users` u LEFT JOIN `bigquery-public-data.stackoverflow.posts_questions` q ON u.id = q.owner_user_id
+--WHERE u.location IN ('United States', 'Singapore', 'India','Indonesia') and EXTRACT(YEAR FROM DATE(u.creation_date)) = 2021
+--GROUP BY u.location
+--ORDER BY count (q.id) DESC, SUM (q.answer_count) DESC, SUM (q.comment_count) DESC
+
+# UNION (used to combine the result-set of two or more SELECT statements)
+--SELECT id, title, body, post_type_id
+--FROM `bigquery-public-data.stackoverflow.posts_questions`
+--UNION DISTINCT
+--SELECT id, title, body, post_type_id
+--FROM `bigquery-public-data.stackoverflow.posts_answers`
+--LIMIT 20
+
+--SELECT id, display_name, creation_date
+--FROM `bigquery-public-data.stackoverflow.users`
+--WHERE creation_date between '2020-01-01' and '2020-12-31'
+--UNION DISTINCT
+--SELECT id, display_name, creation_date
+--FROM `bigquery-public-data.stackoverflow.users`
+--WHERE creation_date between '2021-01-01' and '2021-12-31'
+
+# CASE WHEN (the case statement goes through conditions and returns a value when the first condition is met (like an if-then-else statement))
+--Please find 10 users who located in United States or Canada and have posted questions, with details: user_id, user_name, user_register_date, user_location, reputation_group ('>10000', '5000-10000', '<=5000')
+--SELECT u.id user_id, u.display_name user_name, u.creation_date register_date, u.location user_location,
+--CASE 
+--WHEN reputation >10000 then '>10000'
+--WHEN reputation <=10000 and reputation>5000 then '5000 - 10000'
+--ELSE '<=5000' end reputation_group
+--FROM `bigquery-public-data.stackoverflow.users` u INNER JOIN `bigquery-public-data.stackoverflow.posts_questions` q ON u.id = q.owner_user_id
+--WHERE u.location in ('United States', 'Canada')
+--LIMIT 10
+
+# SUBQUERY (are nested queries that provide data to the enclosing query)
+--Please show many user that post EXACTLY 1, 10 and 100 question in 2020? total_post, total_user
+--SELECT total_post, COUNT (DISTINCT owner_user_id) total_user
+--FROM (
+--SELECT owner_user_id, COUNT(DISTINCT id) total_post
+--FROM `bigquery-public-data.stackoverflow.posts_answers`
+--WHERE EXTRACT (YEAR FROM creation_date) = 2021 and owner_user_id IS NOT NULL 
+--GROUP BY 1)
+--WHERE total_post IN (1,10,100)
+--GROUP BY 1
+--LIMIT 10
+
+# CTE (a temporary result set which you can then use in a SELECT statement)
+--WITH cte_1 AS(
+--SELECT owner_user_id, COUNT(DISTINCT id) total_post
+--FROM `bigquery-public-data.stackoverflow.posts_answers`
+--WHERE EXTRACT (YEAR FROM creation_date) = 2021 and owner_user_id IS NOT NULL 
+--GROUP BY 1)
+--SELECT total_post, COUNT(DISTINCT owner_user_id) total_user
+--FROM cte_1
+--WHERE total_post IN (1,10,100)
+--GROUP BY 1
+
+# USE CASE STACKOVERFLOW
+
+## USE_CASE_01
+--Please find top 5 users (based on total posts) who have posted at least 100 answer in Q2 2021
+--SELECT u.id user_id, u.display_name user_name, count(pa.id) total_answer
+--FROM `bigquery-public-data.stackoverflow.posts_answers` pa LEFT JOIN `bigquery-public-data.stackoverflow.users` u ON pa.owner_user_id = u.id
+--WHERE pa.creation_date BETWEEN '2021-04-01' and '2021-06-30'
+--GROUP BY user_id,user_name
+--HAVING count(pa.id) >=100
+--ORDER BY COUNT(pa.id) DESC
+--LIMIT 5
+
+## USE_CASE_02
+--Please find the comparison between total questions an total answers in period 2019-2020 from 4 countries (United States, Canada, Spain, Japan)-users
+--SELECT 'q' type, u.location user_location, COUNT(q.id) total_question
+--FROM `bigquery-public-data.stackoverflow.posts_questions` q LEFT JOIN `bigquery-public-data.stackoverflow.users` u ON q.owner_user_id = u.id
+--WHERE u.location IN ('United States', 'Canada', 'Spain', 'Japan') and q.creation_date BETWEEN '2019-01-01' and '2020-12-31'
+--GROUP BY type, user_location
+--UNION DISTINCT
+--SELECT 'pa' type, u.location user_location, COUNT(pa.id) total_question
+--FROM `bigquery-public-data.stackoverflow.posts_answers` pa LEFT JOIN `bigquery-public-data.stackoverflow.users` u ON pa.owner_user_id = u.id
+--WHERE u.location IN ('United States', 'Canada', 'Spain', 'Japan') and pa.creation_date BETWEEN '2019-01-01' and '2020-12-31'
+--GROUP BY type, user_location
+
+## USE_CASE_03
+--Please find the comparison between total questions and total answers in period 2020-2021 from users who have reputation more than 100 in 3 countries (Indonesia, Malaysia and Singapore)
+--SELECT 'q' type, u.location user_location, COUNT(q.id) total_question
+--FROM `bigquery-public-data.stackoverflow.posts_questions` q LEFT JOIN `bigquery-public-data.stackoverflow.users` u ON q.owner_user_id = u.id
+--WHERE u.location IN ('Indonesia', 'Malaysia', 'Singapore') and q.creation_date BETWEEN '2020-01-01' and '2021-12-31'
+--GROUP BY type, user_location
+--UNION DISTINCT
+--SELECT 'pa' type, u.location user_location, COUNT(pa.id) total_question
+--FROM `bigquery-public-data.stackoverflow.posts_answers` pa LEFT JOIN `bigquery-public-data.stackoverflow.users` u ON pa.owner_user_id = u.id
+--WHERE u.location IN ('Indonesia', 'Malaysia', 'Singapore') and pa.creation_date BETWEEN '2020-01-01' and '2021-12-31'
+--GROUP BY type, user_location
+--ORDER BY type, user_location
+

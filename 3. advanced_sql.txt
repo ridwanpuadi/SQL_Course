@@ -1,0 +1,269 @@
+## SUBQUERY ADVANCED ##
+--Please show 200 users whose names contains numbers and have registered in 2018 or 2019 or 2929, eith details: user_id, user_name(cleaned version without number), 5 characters from the right side, year registered date, month registered date, day registered date.
+
+#WITHOUT SUBQURIES
+-- SELECT id user_id, REGEXP_REPLACE(display_name, '[0-9]+', ' '), RIGHT(display_name, 5) fiveright_user_name,Extract (YEAR FROM creation_date) year_registered_date, EXTRACT (month from creation_date) month_registered_date, EXTRACT (day from creation_date) day_registered_date
+-- FROM `bigquery-public-data.stackoverflow.users`
+-- WHERE REGEXP_CONTAINS(display_name, '[0-9]+') =TRUE and EXTRACT (YEAR FROM creation_date) in (2018, 2019, 2020)
+-- LIMIT 200
+
+#WITH SUBQURIES
+-- SELECT*
+-- FROM(
+-- SELECT id user_id, REGEXP_REPLACE(display_name, '[0-9]+', ' '), RIGHT(display_name, 5) fiveright_user_name,
+-- EXTRACT (YEAR FROM creation_date) year_registered_date, 
+-- EXTRACT (month from creation_date) month_registered_date, 
+-- EXTRACT (day from creation_date) day_registered_date
+-- FROM `bigquery-public-data.stackoverflow.users`
+-- WHERE REGEXP_CONTAINS(display_name, '[0-9]+') =TRUE) users
+-- WHERE year_registered_date in (2018, 2019, 2020) 
+-- LIMIT 200
+
+#SUBQUERY: AGG IN MULTIPLE STAGES
+--Please find yearly average total users whose names contains numbers and have registered in 2018 or 2019 or 2020
+-- SELECT year_registered, AVG(total_users) avg_username_withnumber
+-- FROM(
+-- SELECT EXTRACT (YEAR FROM creation_date) year_registered,
+-- EXTRACT (MONTH FROM creation_date) month_registered,COUNT(id) total_users
+-- FROM `bigquery-public-data.stackoverflow.users`
+-- WHERE REGEXP_CONTAINS(display_name, '[0-9]+')=TRUE
+-- AND EXTRACT(YEAR FROM creation_date) in (2018, 2019, 2020)
+-- GROUP BY 1,2) users
+-- GROUP BY 1
+
+#SUBQUERY: IN CONDITIONAL LOGIC
+--Please find monthly total users whose names contains numbers and have registered in 2018 or 2019 or 2020 where their reputation more than average reputation from all users
+-- SELECT EXTRACT(YEAR FROM creation_date) year_registered,
+-- EXTRACT(MONTH FROM creation_date) month_registered, COUNT(id) total_users
+-- FROM `bigquery-public-data.stackoverflow.users`
+-- WHERE reputation >
+-- (
+-- SELECT AVG(reputation)
+-- FROM `bigquery-public-data.stackoverflow.users`
+-- )
+-- AND REGEXP_CONTAINS(display_name, '[0-90]+')=TRUE
+-- AND EXTRACT (YEAR FROM creation_date) in (2018, 2019, 2020)
+-- GROUP BY 1, 2
+-- ORDER BY 1, 2
+
+#JOINING SUBQUERIES
+--Please find monthly total users who registered in 2018 or 2019 or 2020, where they posted comments in 2020-2021 and its score >1
+-- SELECT EXTRACT(YEAR FROM users.creation_date) year_registered,
+-- EXTRACT(MONTH FROM users.creation_date) month_registered, COUNT(DISTINCT users.id) total_users
+-- FROM `bigquery-public-data.stackoverflow.users` users
+-- INNER JOIN(
+-- SELECT*
+-- FROM `bigquery-public-data.stackoverflow.comments`
+-- WHERE EXTRACT(YEAR FROM creation_date) in (2019, 2020) AND score>1) comments
+-- ON users.id = comments.user_id
+-- WHERE EXTRACT(YEAR FROM users.creation_date) in (2018, 2019, 2020)
+-- GROUP BY 1,2
+-- ORDER BY 1,2
+
+#SUBQUERY: SUBQUERIES AND UNIONS
+-- Please find monthly total comments from users whose reputation > 1000 and have registered in 2019-2020 or users whose names contains number and have registered in 2018-2019
+-- SELECT EXTRACT(YEAR FROM comments.creation_date) year_comment_date,
+-- EXTRACT(MONTH FROM comments.creation_date) month_comment_date,
+-- COUNT(comments.id) total_comments
+-- FROM `bigquery-public-data.stackoverflow.comments` comments
+-- INNER JOIN(
+--   SELECT*
+--   FROM `bigquery-public-data.stackoverflow.users`
+--   WHERE EXTRACT(YEAR FROM creation_date) in (2019, 2020) AND reputation > 10000
+--   UNION DISTINCT
+--   SELECT*
+--   FROM `bigquery-public-data.stackoverflow.users`
+--   WHERE REGEXP_CONTAINS(display_name, '[0-9]+') =TRUE AND EXTRACT(YEAR FROM creation_date) in (2018, 2019)
+-- ) users
+-- ON comments.user_id=users.id
+-- GROUP BY 1,2
+-- ORDER BY 1,2
+
+## CTE ADVANCED) ##
+# CTE: EXAMPLE
+-- WITH users_reputation as (
+-- SELECT EXTRACT(YEAR FROM creation_Date) year_registered, 
+-- EXTRACT(MONTH FROM creation_date) month_registered,
+-- AVG(reputation) avg_users_reputation
+-- FROM `bigquery-public-data.stackoverflow.users`
+-- WHERE creation_date between '2020-01-01' and '2021-01-31'
+-- GROUP BY 1,2)
+-- SELECT*
+-- FROM users_reputation
+
+# CTE: CTE vs SUBQUERY
+-- SELECT year_registered, AVG(total_users) avg_username_withnumber
+-- FROM(
+--   SELECT EXTRACT(YEAR FROM creation_date) year_registered, EXTRACT(MONTH FROM creation_date) month_registered, COUNT(id) total_users
+--   FROM `bigquery-public-data.stackoverflow.users`
+--   WHERE REGEXP_CONTAINS(display_name, '[0-9]+') =TRUE AND EXTRACT(YEAR FROM creation_date) in (2018, 2019, 2020)
+--   GROUP BY 1, 2) users
+--   GROUP BY 1
+
+-- WITH users AS 
+-- (
+--   SELECT EXTRACT(YEAR FROM creation_date) year_registered, EXTRACT(MONTH FROM creation_date) month_registered, COUNT(id) total_users
+--   FROM `bigquery-public-data.stackoverflow.users`
+--   WHERE REGEXP_CONTAINS(display_name, '[0-9]+') =TRUE AND EXTRACT(YEAR FROM creation_date) in (2018, 2019, 2020)
+--   GROUP BY 1, 2)
+--   SELECT year_registered, AVG(total_users) avg_username_withnumber
+--   FROM users
+--   GROUP BY 1
+
+## WINDOW FUNCTIONS ##
+# ROW_NUMBER, RANK, DENSE_RANK
+-- SELECT*
+-- FROM (
+--   SELECT owner_user_id, creation_date, 
+--   ROW_NUMBER() OVER(PARTITION BY owner_user_id ORDER BY creation_date) row_number,
+--   RANK() OVER(PARTITION BY owner_user_id ORDER BY creation_date) rank,
+--   DENSE_RANK() OVER(PARTITION BY owner_user_id ORDER BY creation_date) dense_rank
+--   FROM `bigquery-public-data.stackoverflow.stackoverflow_posts`
+--   WHERE owner_user_id is not null
+--   ORDER BY 1
+--   LIMIT 10000
+-- ) main
+-- ORDER BY 1, 2
+
+# SUM, AVG, COUNT
+-- SELECT id, title, creation_date, owner_user_id, view_count,
+--   SUM(view_count) OVER(ORDER BY id) sum_view_over,
+--   AVG(view_count) OVER(ORDER BY id) avg_view_over,
+--   COUNT(view_count) OVER(ORDER BY id) count_view_over
+-- FROM (
+--   SELECT*
+--   FROM `bigquery-public-data.stackoverflow.posts_questions`
+--   ORDER BY owner_user_id
+--   LIMIT 10000
+-- ) main
+
+-- SELECT id, title, creation_date, owner_user_id, view_count,
+--   SUM(view_count) OVER(PARTITION BY owner_user_id ORDER BY id) sum_view_over,
+--   AVG(view_count) OVER(PARTITION BY owner_user_id ORDER BY id) avg_view_over,
+--   COUNT(view_count) OVER(PARTITION BY owner_user_id ORDER BY id) count_view_over
+-- FROM (
+--   SELECT*
+--   FROM `bigquery-public-data.stackoverflow.posts_questions`
+--   ORDER BY owner_user_id
+--   LIMIT 10000
+-- ) main
+
+# LAG AND LEAD
+-- SELECT*
+-- FROM(
+-- SELECT id,owner_user_id, view_count,
+--   LAG(view_count) OVER(PARTITION BY owner_user_id ORDER BY id) prev_view_count,
+--   LEAD(view_count) OVER(PARTITION BY owner_user_id ORDER BY id) next_view_count,
+--   FROM `bigquery-public-data.stackoverflow.posts_questions`
+--   WHERE owner_user_id is not null and view_count is not null
+--   ORDER BY owner_user_id
+--   LIMIT 10000
+-- ) main
+-- ORDER BY owner_user_id
+
+# CASE STUDY TIME SERIES TREND
+## RUNNING TOTALS (the cimulative sum of all the prevoius numbers in a column)
+--Total users who posted answers from the first day of a month until the observed day in the same month
+-- WITH OBS AS
+-- (
+-- SELECT date(date_trunc(creation_date, day)) day_posted, count(distinct owner_user_id) total_users
+-- FROM `bigquery-public-data.stackoverflow.posts_answers`
+-- WHERE date_trunc(creation_date, month) = '2021-08-01'
+-- GROUP BY 1)
+-- SELECT*, SUM (total_users) OVER(ORDER BY day_posted) total_users_cummulative 
+-- FROM OBS
+
+--running total (cumulative sum) of comments and the users from 1st quarter until last quarter in 2020
+-- WITH OBS as(
+-- SELECT date(date_trunc(creation_date, quarter)) qtr_posted,
+-- COUNT(id) total_comments, COUNT(distinct user_id) total_users
+-- FROM `bigquery-public-data.stackoverflow.comments`
+-- WHERE date_trunc(creation_date, year)= '2020-01-01'
+-- GROUP BY 1)
+-- SELECT*, SUM(total_comments) OVER(ORDER BY qtr_posted) total_comments_cummulative,
+-- SUM(total_users) OVER(ORDER BY qtr_posted) total_users_cummulative
+-- FROM OBS
+
+--total questions from January until the observed month in the same year
+-- WITH OBS AS(
+-- SELECT date(date_trunc(creation_date, month)) mth_posted,
+-- COUNT(id) total_questions
+-- FROM `bigquery-public-data.stackoverflow.posts_questions`
+-- WHERE date_trunc(creation_date, year)='2021-01-01'
+-- GROUP BY 1)
+-- SELECT*, SUM(total_questions) OVER (order by mth_posted) total_questions_cummulative
+-- FROM OBS
+
+## PERCENT OF CHANGE (there's another very common pattern used in time series analysis called 'percent of change')
+--has stackoverflow's number of registered users increased or decreased this year
+-- WITH OBS AS (
+-- SELECT date(date_trunc(creation_date, year)) year_register,
+-- COUNT(id) total_registered_users
+-- FROM `bigquery-public-data.stackoverflow.users`
+-- GROUP BY 1),
+-- OBS_2 AS (
+--   SELECT year_register,
+--   LAG(total_registered_users) OVER(ORDER BY year_register) total_registered_user_prev,
+--   total_registered_users
+--   FROM OBS
+--   ORDER BY year_register
+-- )
+-- SELECT*, (CAST((total_registered_users - total_registered_user_prev) as decimal)/total_registered_user_prev)*100 as percent_change
+-- FROM OBS_2
+
+## SIMPLE MOVING AVERAGE
+--the average number of comments for the last 7 days
+-- WITH OBS AS(
+--   SELECT date(date_trunc(creation_date, day)) day_posted,
+--   COUNT(id) total_comments
+--   FROM `bigquery-public-data.stackoverflow.comments`
+--   WHERE date_trunc(creation_date, month)='2021-08-01'
+--   GROUP BY 1
+-- )
+-- SELECT*, AVG (total_comments) OVER(ORDER BY day_posted ROWS BETWEEN 6 PRECEDING AND CURRENT ROW) SMA7
+-- FROM OBS
+
+--the average number of questions for the last 10 days
+-- WITH OBS AS(
+--   SELECT date(date_trunc(creation_date, day)) as day_posted,
+--   COUNT(id) total_questions
+--   FROM `bigquery-public-data.stackoverflow.posts_questions`
+--   WHERE date_trunc(creation_date, month)='2021-08-01'
+--   GROUP BY 1
+-- )
+-- SELECT*, AVG (total_questions) OVER(ORDER BY day_posted ROWS BETWEEN 9 PRECEDING AND CURRENT ROW) SMA10
+-- FROM OBS
+
+## COHORT ANALYSIS
+-- WITH cte_1 AS(
+--   SELECT DISTINCT owner_user_id user_id, 
+--   MIN(date_trunc(date(creation_date), month)) OVER (PARTITION BY owner_user_id) first_post_date, date_trunc(date(creation_date), month) running_post_date
+--   FROM `bigquery-public-data.stackoverflow.posts_questions`),
+--   cte_2 AS(
+--     SELECT*, DATE_DIFF (running_post_date,first_post_date, month) diff_month,
+--     COUNT(DISTINCT user_id) OVER(PARTITION BY first_post_date) cohort_size
+--     FROM cte_1), 
+--   cte_3 AS(
+--     SELECT first_post_date, diff_month month, cohort_size,
+--     COUNT(DISTINCT user_id) total_user 
+--     FROM cte_2
+--     WHERE first_post_date >= '2020-01-01'
+--     GROUP BY 1,2,3
+--     ORDER BY 1,2)
+--   SELECT*, total_user / cohort_size total_user_perc
+--   FROM cte_3
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
